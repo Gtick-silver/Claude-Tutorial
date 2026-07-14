@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Getting Started with Claude — Silver Hills Bakery</title>
+<style>
+  :root{
+    --bg:#f6f4ef; --panel:#ffffff; --ink:#25211b; --muted:#6f6a60; --line:#e6e1d7;
+    --brand:#b5651d; --brand-dark:#8a4c14; --accent:#3f6f52; --accent-soft:#eef3ee;
+    --brand-soft:#fbf1e6; --shadow:0 6px 24px rgba(40,30,15,.08); --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--brand-dark)}
+  .wrap{display:flex;min-height:100vh;max-width:1200px;margin:0 auto}
+  .sidebar{width:288px;flex:0 0 288px;background:var(--panel);border-right:1px solid var(--line);
+    padding:26px 20px;position:sticky;top:0;height:100vh;overflow-y:auto}
+  .content{flex:1;padding:40px 48px 96px;max-width:840px}
+  .brand{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));
+    display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:var(--shadow)}
+  .brand h1{font-size:16px;margin:0;line-height:1.2}
+  .brand p{font-size:12px;color:var(--muted);margin:2px 0 0}
+  .progress-box{margin:20px 0 18px}
+  .progress-track{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+  .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#5b9070);transition:width .4s ease}
+  .progress-label{font-size:12px;color:var(--muted);margin-top:6px}
+  nav{list-style:none;padding:0;margin:0}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;cursor:pointer;
+    font-size:14px;color:var(--ink);margin-bottom:2px;user-select:none;transition:background .15s}
+  .nav-item:hover{background:var(--brand-soft)}
+  .nav-item.active{background:var(--brand-soft);font-weight:600;color:var(--brand-dark)}
+  .nav-check{width:20px;height:20px;flex:0 0 20px;border-radius:50%;border:2px solid var(--line);
+    display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;background:transparent}
+  .nav-item.done .nav-check{background:var(--accent);border-color:var(--accent)}
+  .nav-num{font-size:11px;color:var(--muted);width:16px;text-align:center}
+  .sidebar-foot{margin-top:22px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+  .reset-btn{background:none;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:11px;color:var(--muted);cursor:pointer;margin-top:10px}
+  .reset-btn:hover{background:var(--bg)}
+  .lesson{display:none;animation:fade .35s ease}
+  .lesson.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);font-weight:700;margin-bottom:8px}
+  h2{font-size:30px;margin:0 0 6px;line-height:1.15}
+  h3{font-size:19px;margin:28px 0 8px}
+  h4{font-size:15px;margin:18px 0 6px;color:var(--brand-dark)}
+  .lead{font-size:17px;color:var(--muted);margin:0 0 20px}
+  p{margin:0 0 14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;margin:18px 0;box-shadow:var(--shadow)}
+  .steps{counter-reset:s;list-style:none;padding:0;margin:14px 0}
+  .steps li{position:relative;padding:6px 0 6px 42px;margin-bottom:6px}
+  .steps li:before{counter-increment:s;content:counter(s);position:absolute;left:0;top:4px;
+    width:28px;height:28px;border-radius:50%;background:var(--brand-soft);color:var(--brand-dark);
+    font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+  .callout{border-left:4px solid var(--accent);background:var(--accent-soft);padding:14px 18px;border-radius:0 12px 12px 0;margin:18px 0}
+  .callout.warn{border-left-color:var(--brand);background:var(--brand-soft)}
+  .callout strong{color:var(--ink)}
+  .prompt-ex{background:#2b2620;color:#f3ede1;border-radius:12px;padding:14px 16px;margin:10px 0;font-size:14.5px;position:relative}
+  .prompt-ex .tag{display:inline-block;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#d9b48c;margin-bottom:6px;font-weight:700}
+  .prompt-ex.bad{background:#3a2b28}
+  .prompt-ex.bad .tag{color:#e69a8f}
+  .copybtn{position:absolute;top:12px;right:12px;background:#4a423a;border:none;color:#f3ede1;border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;font-weight:600}
+  .copybtn:hover{background:#5c5249}
+  .pill{display:inline-block;background:var(--brand-soft);color:var(--brand-dark);border-radius:99px;padding:3px 11px;font-size:12px;font-weight:600;margin:0 4px 4px 0}
+  /* decision flow */
+  .flow{margin:18px 0}
+  .flow-row{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--line);
+    border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow)}
+  .flow-if{flex:1;font-size:14.5px}
+  .flow-if small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+  .flow-arrow{color:var(--muted);font-size:22px;flex:0 0 auto}
+  .flow-then{flex:0 0 auto;font-weight:700;border-radius:12px;padding:9px 14px;font-size:14px;white-space:nowrap;text-align:center;min-width:120px}
+  .flow-then small{display:block;font-weight:500;font-size:11px;opacity:.85;margin-top:2px;white-space:normal}
+  .t-chat{background:var(--brand-soft);color:var(--brand-dark)}
+  .t-cowork{background:var(--accent-soft);color:var(--accent)}
+  .t-haiku{background:#eaf3ee;color:#3f6f52}
+  .t-sonnet{background:#e9eef6;color:#3a5a8a}
+  .t-opus{background:#f5e9e0;color:#8a4c14}
+  .t-fable{background:#f0eaf3;color:#6a4a8a}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--brand-soft);color:var(--brand-dark);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+  .foot-nav{display:flex;justify-content:space-between;gap:12px;margin-top:36px;padding-top:22px;border-top:1px solid var(--line)}
+  .btn{border:none;border-radius:12px;padding:13px 22px;font-size:15px;font-weight:600;cursor:pointer;transition:transform .1s,box-shadow .15s}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--brand);color:#fff;box-shadow:var(--shadow)}
+  .btn-primary:hover{background:var(--brand-dark)}
+  .btn-ghost{background:var(--panel);color:var(--ink);border:1px solid var(--line)}
+  .btn-ghost:hover{background:var(--brand-soft)}
+  .btn:disabled{opacity:.35;cursor:default;box-shadow:none}
+  .btn-done{background:var(--accent);color:#fff}
+  .hero{background:linear-gradient(135deg,var(--brand-soft),#fff);border:1px solid var(--line);border-radius:20px;padding:30px 32px;margin-bottom:22px}
+  .hero h2{font-size:34px}
+  .meta-row{display:flex;gap:22px;flex-wrap:wrap;margin-top:14px;font-size:13px;color:var(--muted)}
+  .meta-row b{color:var(--ink)}
+  .checklist{list-style:none;padding:0;margin:10px 0}
+  .checklist li{padding:8px 0 8px 30px;position:relative;border-bottom:1px dashed var(--line)}
+  .checklist li:before{content:"✓";position:absolute;left:0;top:8px;color:var(--accent);font-weight:800}
+  kbd{background:var(--bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 7px;font-size:13px;font-family:inherit}
+  figure{margin:18px 0}
+  figure svg{width:100%;height:auto;display:block;border-radius:14px}
+  figcaption{font-size:12px;color:var(--muted);margin-top:8px;text-align:center;font-style:italic}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120%);background:var(--ink);color:#fff;padding:12px 20px;border-radius:99px;font-size:14px;box-shadow:var(--shadow);transition:transform .35s ease;z-index:50}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  .mobile-top{display:none}
+  @media (max-width:860px){
+    .wrap{flex-direction:column}
+    .sidebar{width:100%;flex:none;height:auto;position:relative;border-right:none;border-bottom:1px solid var(--line)}
+    .content{padding:26px 20px 80px}
+    .mobile-top{display:block}
+    nav{max-height:0;overflow:hidden;transition:max-height .3s ease}
+    nav.open{max-height:1200px}
+    .flow-row{flex-wrap:wrap}
+    .flow-then{min-width:100%}
+  }
+  @media print{
+    .sidebar,.foot-nav,.toast,.copybtn{display:none}
+    .lesson{display:block!important;page-break-after:always}
+    .content{max-width:100%}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">🥖</div>
+      <div><h1>Claude at Silver Hills</h1><p>Getting-started tutorial</p></div>
+    </div>
+    <div class="progress-box">
+      <div class="progress-track"><div class="progress-fill" id="progFill"></div></div>
+      <div class="progress-label" id="progLabel"></div>
+    </div>
+    <div class="mobile-top" style="margin-bottom:10px">
+      <button class="reset-btn" onclick="document.getElementById('navList').classList.toggle('open')">☰ Lessons</button>
+    </div>
+    <nav id="navList"></nav>
+    <div class="sidebar-foot">
+      Ticking off lessons isn't required — it just helps you keep your place if you come back later.
+      <br><button class="reset-btn" onclick="resetProgress()">Reset progress</button>
+    </div>
+  </aside>
+  <main class="content" id="content"></main>
+</div>
+<div class="toast" id="toast">Lesson complete ✓</div>
+
+<script>
+/* ---------- Illustration SVGs (mockups of the interface) ---------- */
+const svgChatBar = `<svg viewBox="0 0 680 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Claude message bar">
+  <rect x="6" y="6" width="668" height="138" rx="20" fill="#2e2b27" stroke="#4a433b"/>
+  <text x="30" y="46" font-family="sans-serif" font-size="16" fill="#9a938a">How can I help you today?</text>
+  <text x="30" y="112" font-family="sans-serif" font-size="22" fill="#cbc3b8">+</text>
+  <rect x="58" y="96" width="60" height="30" rx="9" fill="#3f3a33"/>
+  <text x="88" y="116" font-family="sans-serif" font-size="14" fill="#f3ede1" text-anchor="middle" font-weight="700">Chat</text>
+  <text x="150" y="116" font-family="sans-serif" font-size="14" fill="#7d766c">Cowork</text>
+  <text x="470" y="116" font-family="sans-serif" font-size="15" fill="#f3ede1" font-weight="700">Opus 4.8</text>
+  <text x="558" y="116" font-family="sans-serif" font-size="14" fill="#b7afa4">High ⌄</text>
+  <text x="616" y="117" font-family="sans-serif" font-size="16" fill="#b7afa4">🎙</text>
+  <text x="646" y="116" font-family="sans-serif" font-size="15" fill="#b7afa4">▮▮▮</text>
+</svg>`;
+
+const svgModes = `<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Approval modes menu">
+  <rect x="6" y="6" width="548" height="158" rx="16" fill="#2e2b27" stroke="#4a433b"/>
+  <text x="30" y="52" font-family="sans-serif" font-size="16" fill="#f3ede1" font-weight="700">✋  Manually approve</text>
+  <text x="30" y="74" font-family="sans-serif" font-size="13" fill="#9a938a">Claude pauses so you can approve each action.</text>
+  <text x="522" y="56" font-family="sans-serif" font-size="18" fill="#6ea3ff" text-anchor="end">✓</text>
+  <line x1="30" y1="94" x2="530" y2="94" stroke="#4a433b"/>
+  <text x="30" y="124" font-family="sans-serif" font-size="16" fill="#f3ede1" font-weight="700">⚠️  Skip all approvals</text>
+  <text x="30" y="146" font-family="sans-serif" font-size="13" fill="#9a938a">Claude never pauses, even for unsafe actions.</text>
+</svg>`;
+
+const svgConnectors = `<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Customize Connectors page">
+  <rect x="20" y="20" width="180" height="200" rx="12" fill="#fbf1e6" stroke="#e6e1d7"/>
+  <text x="40" y="52" font-family="sans-serif" font-size="13" fill="#8a4c14" font-weight="700">CUSTOMIZE</text>
+  <text x="40" y="86" font-family="sans-serif" font-size="14" fill="#25211b">Connectors</text>
+  <text x="40" y="118" font-family="sans-serif" font-size="14" fill="#6f6a60">Plugins</text>
+  <text x="40" y="150" font-family="sans-serif" font-size="14" fill="#6f6a60">Instructions</text>
+  <rect x="220" y="20" width="400" height="200" rx="12" fill="#fff" stroke="#e6e1d7"/>
+  <text x="242" y="50" font-family="sans-serif" font-size="12" fill="#8a4c14" font-weight="700">CONNECTED</text>
+  <text x="242" y="78" font-family="sans-serif" font-size="14" fill="#25211b">✓ Microsoft 365 (Outlook, SharePoint)</text>
+  <text x="242" y="104" font-family="sans-serif" font-size="14" fill="#25211b">✓ …and more set up by IT</text>
+  <text x="242" y="140" font-family="sans-serif" font-size="12" fill="#8a4c14" font-weight="700">AVAILABLE</text>
+  <text x="242" y="168" font-family="sans-serif" font-size="14" fill="#6f6a60">＋ Browse things you can connect</text>
+  <text x="242" y="200" font-family="sans-serif" font-size="13" fill="#6f6a60">Usage &amp; limits visible in Settings</text>
+</svg>`;
+
+/* ---------- Lessons ---------- */
+const lessons = [
+{
+  id:"welcome", nav:"Welcome",
+  html:`
+    <div class="hero">
+      <div class="eyebrow">Welcome</div>
+      <h2>Meet Claude 👋</h2>
+      <p class="lead">A short, self-paced tour of the Claude app that IT just set up on your computer. No tech background needed.</p>
+      <div class="meta-row">
+        <span>📚 <b>13 short lessons</b></span>
+        <span>🥖 <b>Built for Silver Hills</b></span>
+        <span>🖨️ <b>Printable cheat sheet at the end</b></span>
+      </div>
+    </div>
+    <p>Claude is an AI assistant that can write, research, analyze data, build documents and spreadsheets, and carry out multi-step work across your files and apps. Think of it as a very capable teammate who's fast, tireless, and happy to take the first pass at almost anything.</p>
+    <h3>What you'll be able to do by the end</h3>
+    <ul class="checklist">
+      <li>Know when to use <b>Chat</b> vs <b>Cowork</b></li>
+      <li>Write requests that get great answers — and have Claude ask <em>you</em> questions to nail it</li>
+      <li>Pick the right <b>model</b> so you're not burning usage unnecessarily</li>
+      <li>Save your preferences once, and organize work with <b>Projects</b></li>
+      <li>Hand off real tasks in <b>Cowork</b> — and schedule ones that repeat</li>
+      <li>Use <b>connectors</b> to work with your email, files, and calendar</li>
+    </ul>
+    <div class="callout"><strong>How to use this tutorial:</strong> Read a lesson, click <b>Mark complete &amp; next</b>, and keep going. Marking lessons isn't mandatory — it just saves your place if you step away. Go at your own pace.</div>
+  `
+},
+{
+  id:"chat-vs-cowork", nav:"Chat vs. Cowork",
+  html:`
+    <div class="eyebrow">Lesson 1</div>
+    <h2>Two ways to work: Chat and Cowork</h2>
+    <p class="lead">Same app, same message box — you pick the right mode for the job. Look for the <b>Chat / Cowork</b> toggle just left of where you type.</p>
+    <h3>Which one? Follow the arrows</h3>
+    <div class="flow">
+      <div class="flow-row"><div class="flow-if">Asking a question, rewriting an email, brainstorming, or explaining something<small>You just want an answer or some text, fast</small></div><span class="flow-arrow">→</span><div class="flow-then t-chat">💬 Chat</div></div>
+      <div class="flow-row"><div class="flow-if">A quick one-off that isn't part of a bigger project<small>No files to dig through, no multi-step work</small></div><span class="flow-arrow">→</span><div class="flow-then t-chat">💬 Chat</div></div>
+      <div class="flow-row"><div class="flow-if">Working on a project, or a multi-step task with your files<small>Research, build a spreadsheet/doc, organize a folder</small></div><span class="flow-arrow">→</span><div class="flow-then t-cowork">⚙️ Cowork</div></div>
+      <div class="flow-row"><div class="flow-if">You want Claude to go do something and come back with finished work<small>Hand it off, step away, review the result</small></div><span class="flow-arrow">→</span><div class="flow-then t-cowork">⚙️ Cowork</div></div>
+    </div>
+    <div class="callout"><strong>Rule of thumb:</strong> Want an answer? <b>Chat</b>. Want a task done and delivered? <b>Cowork</b>.</div>
+    <div class="callout warn"><strong>Good to know:</strong> Cowork does more behind the scenes, so it uses more of your usage allowance than Chat. Save it for multi-step jobs.</div>
+  `
+},
+{
+  id:"prompting", nav:"Writing good prompts",
+  html:`
+    <div class="eyebrow">Lesson 2</div>
+    <h2>How to ask for great results</h2>
+    <p class="lead">What you get back depends a lot on how you ask. It's an easy skill to pick up.</p>
+    <p>The biggest tip: <b>be specific.</b> Give Claude the context a new coworker would need. Four things to include when they matter:</p>
+    <p><span class="pill">1. The task</span><span class="pill">2. Context / background</span><span class="pill">3. Format you want</span><span class="pill">4. Audience or tone</span></p>
+    <div class="prompt-ex bad"><span class="tag">✗ Vague</span>"Write something about our new bread."</div>
+    <div class="prompt-ex"><span class="tag">✓ Specific</span>"Write a 100-word Instagram caption announcing our new sprouted rye loaf. Warm, playful tone. Mention it's organic and has 5g of fiber per slice. End with a question to boost comments."</div>
+
+    <h3>The one line to add to almost everything</h3>
+    <p>Claude can't read your mind — but it can pull what's in your head out with good questions. Get in the habit of adding this to your requests:</p>
+    <div class="prompt-ex"><button class="copybtn" onclick="copyText(this)">Copy</button><span class="tag">✓ Add this line</span>"Ask me questions for clarification before you start, so you know exactly what I'm picturing."</div>
+    <p>Claude will ask a few pointed questions, you answer, and the result comes back far closer to what you actually wanted — first try.</p>
+
+    <h3>Don't know how to phrase it at all? Let Claude write the prompt</h3>
+    <div class="prompt-ex"><button class="copybtn" onclick="copyText(this)">Copy</button><span class="tag">✓ Copy &amp; paste</span>"I want to [describe your goal, e.g. 'make a one-page flyer for our farmers-market booth']. Ask me questions one at a time until you have everything you need to do this really well, then write it."</div>
+
+    <h3>A few more habits that pay off</h3>
+    <ul class="checklist">
+      <li><b>Give examples.</b> Paste a caption you loved and say "match this style."</li>
+      <li><b>Ask for a format.</b> "Give me a table," "bullet points," "three options."</li>
+      <li><b>Iterate.</b> The first answer is a draft — just reply "shorter," "more formal," "add a stat."</li>
+      <li><b>Say who it's for.</b> "Explain for a store manager," "for a food scientist."</li>
+    </ul>
+  `
+},
+{
+  id:"models", nav:"Choosing a model",
+  html:`
+    <div class="eyebrow">Lesson 3</div>
+    <h2>Pick the right model (and save usage)</h2>
+    <p class="lead">There's a model picker next to where you type. Bigger models are smarter but use more of your allowance — so don't run the heaviest one for everything.</p>
+    <p>Think of it like using the right oven for the job: you don't fire up the big deck oven to toast one slice. Match the model to the task.</p>
+    <h3>Which model? Follow the arrows</h3>
+    <div class="flow">
+      <div class="flow-row"><div class="flow-if">Simple &amp; quick<small>Short rewrite, a quick question, summarize a short note</small></div><span class="flow-arrow">→</span><div class="flow-then t-haiku">Haiku 4.5<small>Lightest — great default for easy stuff</small></div></div>
+      <div class="flow-row"><div class="flow-if">Everyday work<small>Most drafting, analysis, and general tasks</small></div><span class="flow-arrow">→</span><div class="flow-then t-sonnet">Sonnet 5<small>Balanced — the everyday workhorse</small></div></div>
+      <div class="flow-row"><div class="flow-if">Hard problem<small>Deep reasoning, complex multi-step work, tricky analysis</small></div><span class="flow-arrow">→</span><div class="flow-then t-opus">Opus 4.8<small>Heaviest — use it when you need the brains</small></div></div>
+      <div class="flow-row"><div class="flow-if">A specialized job it's built for<small>Ask IT if you're unsure whether it fits</small></div><span class="flow-arrow">→</span><div class="flow-then t-fable">Fable 5<small>Specialized — not an everyday pick</small></div></div>
+    </div>
+    <div class="callout"><strong>Simple rule:</strong> Start with the lightest model that can do the job well. Step up to Opus only when the answer isn't good enough. That keeps your usage lasting longer.</div>
+    <div class="callout warn"><strong>About that "High" setting:</strong> Next to the model you may see an effort level (like "High"). Higher effort means more thorough thinking but more usage. Leave it on the default unless a task genuinely needs deeper reasoning.</div>
+  `
+},
+{
+  id:"instructions", nav:"Custom instructions",
+  html:`
+    <div class="eyebrow">Lesson 4</div>
+    <h2>Tell Claude how you work — once</h2>
+    <p class="lead">Instead of repeating your preferences every time, save them so every session already knows.</p>
+    <p>Global instructions are standing notes that apply to <em>all</em> your Cowork sessions — your role, your tone, how you like output formatted. Claude reads them automatically.</p>
+    <h3>How to set them</h3>
+    <ol class="steps">
+      <li>Go to <b>Settings → Cowork</b>.</li>
+      <li>Click <b>Edit</b> next to <b>Global instructions</b>.</li>
+      <li>Type your preferences and click <b>Save</b>.</li>
+    </ol>
+    <div class="card"><b>Example global instructions:</b>
+      <div class="prompt-ex" style="margin-top:10px">"I'm on the marketing team at Silver Hills Bakery, an organic sprouted-grain bread company. Keep a warm, upbeat brand voice. Default to concise output with clear headings. When you write copy, always give me 2–3 options. If anything's unclear, ask me questions first."</div>
+    </div>
+    <div class="callout"><strong>Folder instructions</strong> do the same thing for one folder/project — handy when a project needs its own rules.</div>
+    <div class="callout warn"><strong>Note:</strong> Don't put passwords or highly sensitive data in instructions. Keep it to preferences and context.</div>
+  `
+},
+{
+  id:"projects", nav:"Projects",
+  html:`
+    <div class="eyebrow">Lesson 5</div>
+    <h2>Projects: keep related work together</h2>
+    <p class="lead">A Project is a dedicated workspace with its own files, links, instructions, and memory.</p>
+    <p>Instead of scattering related tasks across many separate chats, group them in a Project. Everything inside shares the same context, so Claude "remembers" the background across tasks in that project.</p>
+    <h3>When to use one</h3>
+    <ul class="checklist">
+      <li>A recurring area of work — "Q3 Product Launch," "Weekly QA Reports," "New Recipe Trials"</li>
+      <li>Anything where you'll want Claude to recall earlier files and decisions</li>
+      <li>Work you want kept separate and organized from everything else</li>
+    </ul>
+    <div class="card"><b>What lives in a Project:</b>
+      <table style="margin-top:8px">
+        <tr><td>📁 <b>Files</b></td><td>Reference docs, data, brand guides Claude can use</td></tr>
+        <tr><td>🔗 <b>Links</b></td><td>Relevant pages or resources</td></tr>
+        <tr><td>📝 <b>Instructions</b></td><td>Rules specific to this project</td></tr>
+        <tr><td>🧠 <b>Memory</b></td><td>Context that carries across tasks in the project</td></tr>
+      </table>
+    </div>
+    <div class="callout"><strong>Tip:</strong> Memory in Cowork currently works <em>inside projects</em>. For ongoing efforts where Claude should build up understanding over time, use a Project.</div>
+  `
+},
+{
+  id:"cowork-tasks", nav:"Running a Cowork task",
+  html:`
+    <div class="eyebrow">Lesson 6</div>
+    <h2>Hand Claude a real task</h2>
+    <p class="lead">This is where Cowork shines: describe the outcome, let Claude do the multi-step work.</p>
+    <h3>The flow</h3>
+    <ol class="steps">
+      <li>In the message box, select <b>Cowork</b>.</li>
+      <li>Describe the task and the result you want. Attach or point to any files.</li>
+      <li>Claude makes a plan and shows what it's doing at each step.</li>
+      <li>Jump in to steer, or step away and come back to finished files.</li>
+    </ol>
+    <div class="card"><b>Real examples you can hand off:</b>
+      <ul class="checklist" style="margin-top:6px">
+        <li>"Organize my Downloads folder by type and date."</li>
+        <li>"Turn these meeting notes into a formatted summary with action items."</li>
+        <li>"Build an Excel tracker for our trial bakes with tabs for each recipe and a summary chart."</li>
+        <li>"Research 5 competitors' sprouted-grain products and give me a comparison deck."</li>
+      </ul>
+    </div>
+    <div class="callout"><strong>It produces real files.</strong> Claude makes polished Word docs, Excel spreadsheets with working formulas, and PowerPoint slides, then hands them over to preview and download.</div>
+    <div class="callout warn"><strong>Keep the desktop app open for local work.</strong> If a task touches files on your computer or your browser, leave the Claude Desktop app open and your computer on so Claude can reach them.</div>
+  `
+},
+{
+  id:"cowork-power", nav:"More Cowork superpowers",
+  html:`
+    <div class="eyebrow">Lesson 7</div>
+    <h2>More things Cowork can do</h2>
+    <p class="lead">Cowork is a lot more than a fancier chat. A quick tour of the capabilities people love.</p>
+    <div class="card"><h4>🧩 It splits big jobs into sub-tasks</h4>
+      <p style="margin:0">For complex work, Claude breaks the job into smaller pieces and runs several workstreams in parallel — like having a small team on it — then pulls the results together.</p></div>
+    <div class="card"><h4>✍️ Edit drafts in place</h4>
+      <p style="margin:0">When Claude writes a document, highlight the part you want changed, click <b>Edit with Claude</b>, and type your request. It edits exactly where you marked.</p></div>
+    <div class="card"><h4>📊 Real spreadsheets &amp; slides</h4>
+      <p style="margin:0">Excel files with working formulas and multiple tabs, and PowerPoint decks from rough notes — not just plain CSVs you have to fix.</p></div>
+    <div class="card"><h4>🌐 It can use your browser</h4>
+      <p style="margin:0">For tasks that touch websites, Claude can open Chrome and click, type, navigate, and fill forms on your behalf.</p></div>
+    <div class="card"><h4>📌 Live artifacts you can pin</h4>
+      <p style="margin:0">Claude can build a live page (a dashboard, tracker, or reference sheet) that you pin and reopen anytime. You'll make one in the last lesson.</p></div>
+    <div class="card"><h4>🗑️ Deletion is always protected</h4>
+      <p style="margin:0">Claude asks for explicit permission before permanently deleting any file.</p></div>
+    <div class="callout"><strong>Try handing off something bigger:</strong> "Read every PDF in this folder, pull the key figures into a spreadsheet, and write a one-page summary of the trends."</div>
+  `
+},
+{
+  id:"scheduled", nav:"Scheduled tasks",
+  html:`
+    <div class="eyebrow">Lesson 8</div>
+    <h2>Scheduled tasks: set it and forget it</h2>
+    <p class="lead">Have Claude run a task on a schedule — every morning, each Monday, monthly — or on demand.</p>
+    <p>If you find yourself asking Claude for the same thing regularly, set it up once and let it run.</p>
+    <h3>How to set one up</h3>
+    <ol class="steps">
+      <li>In any Cowork task, type <kbd>/schedule</kbd> — or click <b>Scheduled</b> in the left sidebar.</li>
+      <li>Describe what to do and how often (e.g. "every weekday at 8am").</li>
+      <li>Claude saves it and runs it on that cadence, or whenever you trigger it.</li>
+    </ol>
+    <div class="card"><b>Ideas by team:</b>
+      <ul class="checklist" style="margin-top:6px">
+        <li><b>QA:</b> "Every Monday 7am, summarize last week's inspection logs and flag anything that failed."</li>
+        <li><b>Marketing:</b> "Each morning, give me 3 post ideas based on this week's food holidays."</li>
+        <li><b>Supply Chain:</b> "Weekly, check my stock sheet and list items below reorder point."</li>
+        <li><b>Sales:</b> "Every Friday, draft a recap email of the week's account activity from my notes."</li>
+      </ul>
+    </div>
+    <div class="callout warn"><strong>Keep your computer on and the desktop app open</strong> for a scheduled task to run, especially if it uses your local files. Set the schedule for a time you'll be signed in.</div>
+  `
+},
+{
+  id:"modes", nav:"Permission modes",
+  html:`
+    <div class="eyebrow">Lesson 9</div>
+    <h2>Staying in control: approval modes</h2>
+    <p class="lead">You decide whether Claude pauses to ask before it takes an action. Switch any time from the mode selector in the chat box.</p>
+    <figure>${svgModes}<figcaption>Illustration — the approval menu. Actual app may look slightly different.</figcaption></figure>
+    <div class="card">
+      <table>
+        <tr><th style="width:170px">Mode</th><th>What happens</th><th>Use when…</th></tr>
+        <tr><td>✋ <b>Manually approve</b></td><td>Claude pauses so you can approve each action. You click Allow or Deny.</td><td>Almost always — especially while you're learning, or for anything with real consequences</td></tr>
+        <tr><td>⚠️ <b>Skip all approvals</b></td><td>Claude never pauses, even for unsafe actions.</td><td>Rarely — only when you completely trust every file, app, and action involved</td></tr>
+      </table>
+    </div>
+    <div class="callout"><strong>Recommended:</strong> Stay on <b>Manually approve</b>. It only takes a second to click Allow, and you always know what Claude is about to do.</div>
+    <div class="callout warn"><strong>Be careful with "Skip all approvals."</strong> It turns off the safety pause entirely, so only use it when you're sure.</div>
+  `
+},
+{
+  id:"connectors", nav:"Connectors",
+  html:`
+    <div class="eyebrow">Lesson 10</div>
+    <h2>Connectors: plug in your apps</h2>
+    <p class="lead">Connectors let Claude reach into your other tools — email, files, calendar — to find info and take actions. Claude only ever sees what <em>you</em> already have permission to see.</p>
+    <figure>${svgConnectors}<figcaption>Illustration — <b>Customize → Connectors</b>. Actual app may look slightly different.</figcaption></figure>
+    <h3>See what's connected (and what you can add)</h3>
+    <p>Click <b>Customize → Connectors</b> to see everything that's already connected plus everything you <em>can</em> connect. You can also check your <b>usage</b> in Settings — handy because Cowork uses more of your allowance than Chat, so it's good to know where you stand.</p>
+    <div class="callout"><strong>Already set up for you at Silver Hills:</strong> IT has enabled our core work connectors — including <b>Microsoft 365</b> (Outlook email &amp; calendar, SharePoint) and several others. You can start using those right away. Once connected, you don't have to name the app — just ask "summarize my unread emails this week" and Claude uses the right one.</div>
+    <div class="callout warn"><strong>Need one that isn't there?</strong> Some connectors have to be enabled centrally or reviewed for security first. Email IT at <a href="mailto:support@silverhillsbakery.com">support@silverhillsbakery.com</a> and we'll look into what we can do — we can't promise every app, but we'll see what's possible.</div>
+  `
+},
+{
+  id:"safety", nav:"Good habits",
+  html:`
+    <div class="eyebrow">Lesson 11</div>
+    <h2>Good habits &amp; staying safe</h2>
+    <p class="lead">A few simple practices keep your work accurate, private, and trustworthy.</p>
+    <ul class="checklist">
+      <li><b>Verify what matters.</b> Claude is very capable but can occasionally be wrong. Double-check facts, figures, and anything customer-facing — especially health or nutrition claims.</li>
+      <li><b>Review before you approve.</b> Read Claude's plan and actions on anything with real consequences (sending messages, changing files).</li>
+      <li><b>Mind sensitive data.</b> Don't paste passwords or data you're not allowed to share. Only connect apps you trust.</li>
+      <li><b>Keep the desktop app open</b> when a task uses your local files or browser.</li>
+      <li><b>Give feedback.</b> Use thumbs up/down and the in-app feedback button — it improves results.</li>
+    </ul>
+    <div class="callout"><strong>Remember:</strong> Claude works best as a fast first draft and a tireless assistant. You stay the editor and decision-maker.</div>
+  `
+},
+{
+  id:"cheatsheet", nav:"Cheat sheet & finish",
+  html:`
+    <div class="eyebrow">You made it 🎉</div>
+    <h2>Quick-reference cheat sheet</h2>
+    <p class="lead">Print this page (<kbd>Ctrl/Cmd + P</kbd>) or bookmark it to keep handy.</p>
+    <div class="card">
+      <table>
+        <tr><th>Want to…</th><th>Do this</th></tr>
+        <tr><td>Ask a quick question or draft text</td><td>Use <b>Chat</b></td></tr>
+        <tr><td>Hand off a multi-step task with files</td><td>Use <b>Cowork</b></td></tr>
+        <tr><td>Get better answers</td><td>Be specific + add "ask me questions for clarification"</td></tr>
+        <tr><td>Choose a model</td><td>Haiku = simple · Sonnet = everyday · Opus = hard problems · Fable = specialized</td></tr>
+        <tr><td>Save your preferences</td><td><b>Settings → Cowork → Global instructions</b></td></tr>
+        <tr><td>Keep related work together</td><td>Create a <b>Project</b></td></tr>
+        <tr><td>Repeat a task automatically</td><td>Type <kbd>/schedule</kbd></td></tr>
+        <tr><td>Edit part of a draft</td><td>Highlight it → <b>Edit with Claude</b></td></tr>
+        <tr><td>Control when Claude asks permission</td><td>Mode selector — stay on <b>Manually approve</b></td></tr>
+        <tr><td>See / add apps &amp; check usage</td><td><b>Customize → Connectors</b> · usage in Settings</td></tr>
+      </table>
+    </div>
+
+    <h3>📌 Make your own pinned cheat sheet inside Claude</h3>
+    <p>Paste this into Claude (in <b>Cowork</b>) and it will build a live "Claude Cheat Sheet" you can pin and reopen whenever you need a reminder:</p>
+    <div class="prompt-ex"><button class="copybtn" onclick="copyText(this)">Copy</button><span class="tag">✓ Copy &amp; paste into Cowork</span>Create a live artifact called "Claude Cheat Sheet" that I can pin and reopen anytime. Make it a clean, friendly one-page reference for using Claude at work, in Silver Hills Bakery's warm style. Cover: when to use Chat vs Cowork; writing good prompts (be specific, and add "ask me questions for clarification"); choosing a model (Haiku for simple, Sonnet for everyday, Opus for hard problems, Fable for specialized); Projects; scheduled tasks with /schedule; approval modes (stay on Manually approve); and connectors (Customize → Connectors). Keep it skimmable with clear sections.</div>
+
+    <h3>Three things to try today</h3>
+    <ul class="checklist">
+      <li>Ask Claude to rewrite one email you'd normally send.</li>
+      <li>Set your global instructions with your role and preferred tone.</li>
+      <li>Make your pinned cheat sheet using the prompt above.</li>
+    </ul>
+    <div class="callout"><strong>Need help?</strong> First, just <b>ask Claude</b> — "how do I…" questions are exactly what it's good at. If you're still stuck, email IT at <a href="mailto:support@silverhillsbakery.com">support@silverhillsbakery.com</a>.</div>
+    <div class="callout warn"><strong>Finished?</strong> Mark this lesson complete to hit 100%. Nice work — you're ready to go. 🥖</div>
+  `
+}
+];
+
+/* ---------- App logic ---------- */
+const STORE_KEY = "shb_claude_tutorial_progress_v3";
+let current = 0;
+let done = {};
+function loadProgress(){ try{ done = JSON.parse(localStorage.getItem(STORE_KEY)) || {}; }catch(e){ done = {}; } }
+function saveProgress(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(done)); }catch(e){} }
+
+function buildNav(){
+  const nav = document.getElementById("navList");
+  nav.innerHTML = "";
+  lessons.forEach((l,i)=>{
+    const item = document.createElement("div");
+    item.className = "nav-item" + (i===current?" active":"") + (done[l.id]?" done":"");
+    item.innerHTML = `<span class="nav-check">✓</span><span class="nav-num">${i}</span><span>${l.nav}</span>`;
+    item.onclick = ()=>{ goTo(i); document.getElementById('navList').classList.remove('open'); };
+    nav.appendChild(item);
+  });
+}
+function buildContent(){
+  const c = document.getElementById("content");
+  c.innerHTML = "";
+  lessons.forEach((l,i)=>{
+    const sec = document.createElement("section");
+    sec.className = "lesson" + (i===current?" active":"");
+    sec.dataset.idx = i;
+    const isLast = i===lessons.length-1;
+    const markLabel = done[l.id] ? "Completed ✓" + (isLast?"":" — Next") : "Mark complete" + (isLast?" ✓":" &amp; next");
+    sec.innerHTML = l.html + `
+      <div class="foot-nav">
+        <button class="btn btn-ghost" ${i===0?"disabled":""} onclick="goTo(${i-1})">← Back</button>
+        <button class="btn ${done[l.id]?'btn-done':'btn-primary'}" id="markBtn-${i}" onclick="markAndNext(${i})">${markLabel}</button>
+      </div>`;
+    c.appendChild(sec);
+  });
+}
+function updateProgress(){
+  const total = lessons.length;
+  const count = lessons.filter(l=>done[l.id]).length;
+  document.getElementById("progFill").style.width = Math.round(count/total*100) + "%";
+  document.getElementById("progLabel").textContent =
+    count===total ? "All lessons complete — nicely done! 🎉" : `${count} of ${total} lessons complete`;
+}
+function goTo(i){
+  if(i<0||i>=lessons.length) return;
+  current = i;
+  document.querySelectorAll(".lesson").forEach(s=>s.classList.toggle("active", +s.dataset.idx===i));
+  buildNav();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function markAndNext(i){
+  const l = lessons[i];
+  if(!done[l.id]){ done[l.id] = true; saveProgress(); showToast(); }
+  buildNav(); updateProgress();
+  const btn = document.getElementById("markBtn-"+i);
+  if(btn){ btn.classList.remove("btn-primary"); btn.classList.add("btn-done");
+    btn.innerHTML = "Completed ✓" + (i===lessons.length-1?"":" — Next"); }
+  if(i < lessons.length-1) setTimeout(()=>goTo(i+1), 350);
+}
+let toastTimer;
+function showToast(){
+  const t = document.getElementById("toast");
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove("show"), 1600);
+}
+function resetProgress(){
+  if(confirm("Reset your tutorial progress?")){
+    done = {}; saveProgress(); buildNav(); buildContent(); updateProgress(); goTo(0);
+  }
+}
+function copyText(btn){
+  const box = btn.parentElement.cloneNode(true);
+  box.querySelectorAll('.copybtn, .tag').forEach(el=>el.remove());
+  const txt = box.textContent.trim();
+  navigator.clipboard.writeText(txt).then(()=>{ const o=btn.textContent; btn.textContent="Copied!"; setTimeout(()=>btn.textContent=o,1200); }).catch(()=>{});
+}
+document.addEventListener("click", e=>{
+  const tab = e.target.closest(".tab");
+  if(!tab) return;
+  const group = tab.closest(".tabs").dataset.tabgroup;
+  const key = tab.dataset.tab;
+  document.querySelectorAll(`.tabs[data-tabgroup="${group}"] .tab`).forEach(t=>t.classList.toggle("active", t===tab));
+  document.querySelectorAll(`.tab-body[data-tabgroup="${group}"] .tab-pane`).forEach(p=>p.classList.toggle("active", p.dataset.tab===key));
+});
+loadProgress(); buildNav(); buildContent(); updateProgress();
+</script>
+</body>
+</html>
