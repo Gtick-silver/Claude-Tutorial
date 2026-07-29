@@ -58,6 +58,11 @@
   .callout{border-left:4px solid var(--accent);background:var(--accent-soft);padding:14px 18px;border-radius:0 12px 12px 0;margin:18px 0}
   .callout.warn{border-left-color:var(--brand);background:var(--brand-soft)}
   .callout strong{color:var(--ink)}
+  .important-banner{display:flex;gap:12px;align-items:flex-start;background:linear-gradient(135deg,#fff3e0,#fbf1e6);
+    border:2px solid var(--brand);border-radius:14px;padding:16px 18px;margin:16px 0;font-size:15px;box-shadow:var(--shadow)}
+  .important-banner b{color:var(--brand-dark)}
+  .imp-badge{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.04em;background:var(--brand);color:#fff;border-radius:99px;padding:2px 8px}
+  .nav-item.important{border:1px solid var(--brand);background:var(--brand-soft)}
   .prompt-ex{background:#2b2620;color:#f3ede1;border-radius:12px;padding:14px 16px;margin:10px 0;font-size:14.5px;position:relative}
   .prompt-ex .tag{display:inline-block;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#d9b48c;margin-bottom:6px;font-weight:700}
   .prompt-ex.bad{background:#3a2b28}
@@ -261,20 +266,37 @@ const lessons = [
   `
 },
 {
-  id:"models", nav:"Choosing a model",
+  id:"models", nav:"Choosing a model", important:true,
   html:`
     <div class="eyebrow">Lesson 3</div>
-    <h2>Pick the right model (and save usage)</h2>
-    <p class="lead">There's a model picker next to where you type. Bigger models are smarter but use more of your allowance — so don't run the heaviest one for everything.</p>
+    <h2>Pick the right model (and save the company money)</h2>
+    <div class="important-banner">⭐ <div><b>This is the most important lesson.</b> The model you choose directly affects how much usage — and money — your work costs. A few good habits here keep costs down for the whole team, so please don't skip it.</div></div>
+    <p class="lead">There's a model picker next to where you type. Bigger models are smarter but cost more to run — so don't reach for the heaviest one out of habit.</p>
     <p>Think of it like using the right oven for the job: you don't fire up the big deck oven to toast one slice. Match the model to the task.</p>
     <h3>Which model? Follow the arrows</h3>
     <div class="flow">
-      <div class="flow-row"><div class="flow-if">Simple &amp; quick<small>Short rewrite, a quick question, summarize a short note</small></div><span class="flow-arrow">→</span><div class="flow-then t-haiku">Haiku 4.5<small>Lightest — great default for easy stuff</small></div></div>
+      <div class="flow-row"><div class="flow-if">Simple &amp; quick<small>Short rewrite, a quick question, summarize a short note</small></div><span class="flow-arrow">→</span><div class="flow-then t-haiku">Haiku 4.5<small>Lightest &amp; cheapest — great default</small></div></div>
       <div class="flow-row"><div class="flow-if">Everyday work<small>Most drafting, analysis, and general tasks</small></div><span class="flow-arrow">→</span><div class="flow-then t-sonnet">Sonnet 5<small>Balanced — the everyday workhorse</small></div></div>
-      <div class="flow-row"><div class="flow-if">Hard problem<small>Deep reasoning, complex multi-step work, tricky analysis</small></div><span class="flow-arrow">→</span><div class="flow-then t-opus">Opus 4.8<small>Heaviest — use it when you need the brains</small></div></div>
-      <div class="flow-row"><div class="flow-if">A specialized job it's built for<small>Ask IT if you're unsure whether it fits</small></div><span class="flow-arrow">→</span><div class="flow-then t-fable">Fable 5<small>Specialized — not an everyday pick</small></div></div>
+      <div class="flow-row"><div class="flow-if">Hard problem<small>Deep reasoning, complex multi-step work, tricky analysis</small></div><span class="flow-arrow">→</span><div class="flow-then t-opus">Opus 4.8<small>Heaviest — use only when you need the brains</small></div></div>
+      <div class="flow-row"><div class="flow-if">A specialized job it's specifically built for<small>Don't pick this unless you know it's the right tool</small></div><span class="flow-arrow">→</span><div class="flow-then t-fable">Fable 5<small>Specialized — costs the company extra</small></div></div>
     </div>
-    <div class="callout"><strong>Simple rule:</strong> Start with the lightest model that can do the job well. Step up to Opus only when the answer isn't good enough. That keeps your usage lasting longer.</div>
+
+    <h3>What each model is for</h3>
+    <div class="card"><h4 style="color:#3f6f52">🟢 Haiku 4.5 — fast &amp; cheap (your default)</h4>
+      <p style="margin:0 0 6px"><b>Use it for:</b> quick questions, rewriting or shortening an email, fixing tone or grammar, summarizing a short note, simple formatting, "what's another way to say this?"</p>
+      <p style="margin:0"><b>Why:</b> it's the lightest on usage. For the majority of everyday asks, you honestly won't notice a difference — so start here.</p></div>
+    <div class="card"><h4 style="color:#3a5a8a">🔵 Sonnet 5 — the everyday workhorse</h4>
+      <p style="margin:0 0 6px"><b>Use it for:</b> most real work — drafting a newsletter or blog post, analyzing a spreadsheet, turning notes into a summary, writing an SOP, building a normal document or deck.</p>
+      <p style="margin:0"><b>Why:</b> the best balance of quality and cost. When Haiku's answer isn't quite deep enough, step up to Sonnet.</p></div>
+    <div class="card"><h4 style="color:#8a4c14">🟠 Opus 4.8 — the heavy lifter (use when needed)</h4>
+      <p style="margin:0 0 6px"><b>Use it for:</b> genuinely hard problems — complex multi-step reasoning, tricky data analysis, thorny research synthesis, or when Sonnet gave a weak answer on something important.</p>
+      <p style="margin:0"><b>Why:</b> it's the most capable but the most expensive to run. Reach for it deliberately, not by default.</p></div>
+    <div class="card" style="border-color:#c99;background:#fbf1e6"><h4 style="color:#6a4a8a">🟣 Fable 5 — specialized (ask before using)</h4>
+      <p style="margin:0 0 6px"><b>Use it for:</b> only the specific specialized tasks it's built for. It is <b>not</b> a general-purpose everyday model.</p>
+      <p style="margin:0"><b>Why it matters:</b> Fable 5 costs the company extra money. <b>Don't select it unless you already know it's the right tool for that specific job.</b> If you're not sure, it isn't — use Sonnet, or ask IT first.</p></div>
+
+    <div class="callout"><strong>Simple rule:</strong> Start with the lightest model that can do the job well (Haiku → Sonnet → Opus). Step up only when the answer isn't good enough. That keeps everyone's usage — and the bill — under control.</div>
+    <div class="callout warn"><strong>Be extra careful with Fable 5.</strong> If you didn't come here specifically needing Fable, don't switch to it — it adds cost with no benefit for normal work.</div>
     <div class="callout warn"><strong>About that "High" setting:</strong> Next to the model you may see an effort level (like "High"). Higher effort means more thorough thinking but more usage. Leave it on the default unless a task genuinely needs deeper reasoning.</div>
   `
 },
@@ -420,7 +442,7 @@ const lessons = [
     <h3>See what's connected (and what you can add)</h3>
     <p>Click <b>Customize → Connectors</b> to see everything that's already connected plus everything you <em>can</em> connect. You can also check your <b>usage</b> in Settings — handy because Cowork uses more of your allowance than Chat, so it's good to know where you stand.</p>
     <div class="callout"><strong>Already set up for you at Silver Hills:</strong> IT has enabled our core work connectors — including <b>Microsoft 365</b> (Outlook email &amp; calendar, SharePoint) and several others. You can start using those right away. Once connected, you don't have to name the app — just ask "summarize my unread emails this week" and Claude uses the right one.</div>
-    <div class="callout warn"><strong>Need one that isn't there?</strong> Some connectors have to be enabled centrally or reviewed for security first. Email IT and we'll look into what we can do — we can't promise every app, but we'll see what's possible.</div>
+    <div class="callout warn"><strong>Need one that isn't there?</strong> Some connectors have to be enabled centrally or reviewed for security first. Email IT at <a href="mailto:support@silverhillsbakery.com">support@silverhillsbakery.com</a> and we'll look into what we can do — we can't promise every app, but we'll see what's possible.</div>
   `
 },
 {
@@ -471,7 +493,7 @@ const lessons = [
       <li>Set your global instructions with your role and preferred tone.</li>
       <li>Make your pinned cheat sheet using the prompt above.</li>
     </ul>
-    <div class="callout"><strong>Need help?</strong> First, just <b>ask Claude</b> — "how do I…" questions are exactly what it's good at. If you're still stuck, email IT.</div>
+    <div class="callout"><strong>Need help?</strong> First, just <b>ask Claude</b> — "how do I…" questions are exactly what it's good at. If you're still stuck, email IT at <a href="mailto:support@silverhillsbakery.com">support@silverhillsbakery.com</a>.</div>
     <div class="callout warn"><strong>Finished?</strong> Mark this lesson complete to hit 100%. Nice work — you're ready to go. 🥖</div>
   `
 }
@@ -489,8 +511,8 @@ function buildNav(){
   nav.innerHTML = "";
   lessons.forEach((l,i)=>{
     const item = document.createElement("div");
-    item.className = "nav-item" + (i===current?" active":"") + (done[l.id]?" done":"");
-    item.innerHTML = `<span class="nav-check">✓</span><span class="nav-num">${i}</span><span>${l.nav}</span>`;
+    item.className = "nav-item" + (i===current?" active":"") + (done[l.id]?" done":"") + (l.important?" important":"");
+    item.innerHTML = `<span class="nav-check">✓</span><span class="nav-num">${i}</span><span>${l.nav}</span>` + (l.important?`<span class="imp-badge">KEY</span>`:"");
     item.onclick = ()=>{ goTo(i); document.getElementById('navList').classList.remove('open'); };
     nav.appendChild(item);
   });
