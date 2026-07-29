@@ -161,7 +161,7 @@ const svgChatBar = `<svg viewBox="0 0 680 150" xmlns="http://www.w3.org/2000/svg
   <rect x="58" y="96" width="60" height="30" rx="9" fill="#3f3a33"/>
   <text x="88" y="116" font-family="sans-serif" font-size="14" fill="#f3ede1" text-anchor="middle" font-weight="700">Chat</text>
   <text x="150" y="116" font-family="sans-serif" font-size="14" fill="#7d766c">Cowork</text>
-  <text x="470" y="116" font-family="sans-serif" font-size="15" fill="#f3ede1" font-weight="700">Opus 4.8</text>
+  <text x="470" y="116" font-family="sans-serif" font-size="15" fill="#f3ede1" font-weight="700">Opus 5</text>
   <text x="558" y="116" font-family="sans-serif" font-size="14" fill="#b7afa4">High ⌄</text>
   <text x="616" y="117" font-family="sans-serif" font-size="16" fill="#b7afa4">🎙</text>
   <text x="646" y="116" font-family="sans-serif" font-size="15" fill="#b7afa4">▮▮▮</text>
@@ -277,23 +277,30 @@ const lessons = [
     <div class="flow">
       <div class="flow-row"><div class="flow-if">Simple &amp; quick<small>Short rewrite, a quick question, summarize a short note</small></div><span class="flow-arrow">→</span><div class="flow-then t-haiku">Haiku 4.5<small>Lightest &amp; cheapest — great default</small></div></div>
       <div class="flow-row"><div class="flow-if">Everyday work<small>Most drafting, analysis, and general tasks</small></div><span class="flow-arrow">→</span><div class="flow-then t-sonnet">Sonnet 5<small>Balanced — the everyday workhorse</small></div></div>
-      <div class="flow-row"><div class="flow-if">Hard problem<small>Deep reasoning, complex multi-step work, tricky analysis</small></div><span class="flow-arrow">→</span><div class="flow-then t-opus">Opus 4.8<small>Heaviest — use only when you need the brains</small></div></div>
+      <div class="flow-row"><div class="flow-if">Hard problem<small>Deep reasoning, complex multi-step work, tricky analysis</small></div><span class="flow-arrow">→</span><div class="flow-then t-opus">Opus 5<small>Heaviest — use only when you need the brains</small></div></div>
       <div class="flow-row"><div class="flow-if">A specialized job it's specifically built for<small>Don't pick this unless you know it's the right tool</small></div><span class="flow-arrow">→</span><div class="flow-then t-fable">Fable 5<small>Specialized — costs the company extra</small></div></div>
     </div>
 
     <h3>What each model is for</h3>
     <div class="card"><h4 style="color:#3f6f52">🟢 Haiku 4.5 — fast &amp; cheap (your default)</h4>
       <p style="margin:0 0 6px"><b>Use it for:</b> quick questions, rewriting or shortening an email, fixing tone or grammar, summarizing a short note, simple formatting, "what's another way to say this?"</p>
-      <p style="margin:0"><b>Why:</b> it's the lightest on usage. For the majority of everyday asks, you honestly won't notice a difference — so start here.</p></div>
+      <p style="margin:0 0 6px"><b>Why:</b> it's the lightest on usage. For the majority of everyday asks, you honestly won't notice a difference — so start here.</p>
+      <p class="usage" style="margin:0"><b>Relative usage:</b> <span class="meter" style="color:#3f6f52">▮▯▯▯</span> lowest</p></div>
     <div class="card"><h4 style="color:#3a5a8a">🔵 Sonnet 5 — the everyday workhorse</h4>
       <p style="margin:0 0 6px"><b>Use it for:</b> most real work — drafting a newsletter or blog post, analyzing a spreadsheet, turning notes into a summary, writing an SOP, building a normal document or deck.</p>
-      <p style="margin:0"><b>Why:</b> the best balance of quality and cost. When Haiku's answer isn't quite deep enough, step up to Sonnet.</p></div>
-    <div class="card"><h4 style="color:#8a4c14">🟠 Opus 4.8 — the heavy lifter (use when needed)</h4>
+      <p style="margin:0 0 6px"><b>Why:</b> the best balance of quality and cost. When Haiku's answer isn't quite deep enough, step up to Sonnet.</p>
+      <p class="usage" style="margin:0"><b>Relative usage:</b> <span class="meter" style="color:#3a5a8a">▮▮▯▯</span> low–moderate</p></div>
+    <div class="card"><h4 style="color:#8a4c14">🟠 Opus 5 — the heavy lifter (use when needed)</h4>
       <p style="margin:0 0 6px"><b>Use it for:</b> genuinely hard problems — complex multi-step reasoning, tricky data analysis, thorny research synthesis, or when Sonnet gave a weak answer on something important.</p>
-      <p style="margin:0"><b>Why:</b> it's the most capable but the most expensive to run. Reach for it deliberately, not by default.</p></div>
+      <p style="margin:0 0 6px"><b>Why:</b> it's the most capable everyday model but noticeably heavier on usage — several times more than Sonnet for the same request. Reach for it deliberately, not by default.</p>
+      <p class="usage" style="margin:0"><b>Relative usage:</b> <span class="meter" style="color:#8a4c14">▮▮▮▮</span> highest of the everyday models</p></div>
     <div class="card" style="border-color:#c99;background:#fbf1e6"><h4 style="color:#6a4a8a">🟣 Fable 5 — specialized (ask before using)</h4>
       <p style="margin:0 0 6px"><b>Use it for:</b> only the specific specialized tasks it's built for. It is <b>not</b> a general-purpose everyday model.</p>
-      <p style="margin:0"><b>Why it matters:</b> Fable 5 costs the company extra money. <b>Don't select it unless you already know it's the right tool for that specific job.</b> If you're not sure, it isn't — use Sonnet, or ask IT first.</p></div>
+      <p style="margin:0 0 6px"><b>Why it matters:</b> Fable 5 costs the company extra money. <b>Don't select it unless you already know it's the right tool for that specific job.</b> If you're not sure, it isn't — use Sonnet, or ask IT first.</p>
+      <p class="usage" style="margin:0"><b>Relative usage:</b> <span class="meter" style="color:#6a4a8a">▮▮▮▮</span> premium — extra cost</p></div>
+
+    <h3 style="font-size:16px">The "More models" list</h3>
+    <p style="font-size:14px">The picker also has a <b>More models</b> option with additional and older versions (previous generations kept around for compatibility). They're generally <b>no cheaper</b> than the four above and often less capable, so there's rarely a reason to choose one for normal work. Unless IT specifically asks you to use one, stick with Haiku, Sonnet, or Opus. If you're ever unsure what something in that list costs, ask IT before switching.</p>
 
     <div class="callout"><strong>Simple rule:</strong> Start with the lightest model that can do the job well (Haiku → Sonnet → Opus). Step up only when the answer isn't good enough. That keeps everyone's usage — and the bill — under control.</div>
     <div class="callout warn"><strong>Be extra careful with Fable 5.</strong> If you didn't come here specifically needing Fable, don't switch to it — it adds cost with no benefit for normal work.</div>
